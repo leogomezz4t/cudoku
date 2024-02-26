@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include "../include/parser.h"
 
-// Constants
 #define GRID_SIZE 9
 
 /*
@@ -13,7 +14,7 @@ int readPuzzle(char *filepath, int pathLength, int** puzzle) {
     if (filepath[pathLength-1] != '\0') { // make sure the string is nul terminated
         return 0;
     }
-    FILE *fptr = fopen(filepath, 'r');
+    FILE *fptr = fopen(filepath, "r");
 
     if (fptr == NULL) { // check if it was valid
         return -1;
