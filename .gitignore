@@ -2,6 +2,11 @@ sudoku.txt
 make.bat
 cudoku.exe
 
+# ignore my playground testing file
+./tests/playground.cs
+play.bat
+playground.exe
+
 # ignore all prototyping python scripts
 *.py
 
