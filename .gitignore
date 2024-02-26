@@ -1,0 +1,5 @@
+
+sudoku.txt
+
+# ignore all prototyping python scripts
+*.py
