@@ -1,5 +1,8 @@
 sudoku.txt
 make.bat
+cudoku.exe
 
 # ignore all prototyping python scripts
 *.py
+
+.vscode
