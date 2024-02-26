@@ -17,5 +17,9 @@
 */
 int readPuzzle(char *filepath, int** puzzle);
 
+/*
+    Returns an int** malloced to GRID_SIZE to be used with readPuzzle()
+*/
+int** createPuzzle();
 
 #endif

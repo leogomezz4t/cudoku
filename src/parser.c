@@ -21,8 +21,7 @@ int readPuzzle(char *filepath, int** puzzle) {
     if (fptr == NULL) { // check if it was valid
         return -1;
     }
-    
-    return -1;
+
     // readline
     char buffer[GRID_SIZE+1];
     int row = 0;
@@ -39,4 +38,11 @@ int readPuzzle(char *filepath, int** puzzle) {
     }
 
     return 1;
+}
+
+/*
+    Returns an int** malloced to GRID_SIZE to be used with readPuzzle()
+*/
+int** createPuzzle() {
+    return (int**) malloc(sizeof(int*) * GRID_SIZE);
 }
