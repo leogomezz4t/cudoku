@@ -13,7 +13,7 @@
 */
 int readPuzzle(char *filepath, int** puzzle) {
     int pathLength = strlen(filepath);
-    if (filepath[pathLength-1] != '\0') { // make sure the string is nul terminated
+    if (filepath[pathLength] != '\0') { // make sure the string is nul terminated
         return 0;
     }
     FILE *fptr = fopen(filepath, "r");
@@ -21,13 +21,15 @@ int readPuzzle(char *filepath, int** puzzle) {
     if (fptr == NULL) { // check if it was valid
         return -1;
     }
-
-    puzzle = (int**) malloc(sizeof(int*) * GRID_SIZE);
     
+    return -1;
     // readline
     char buffer[GRID_SIZE+1];
     int row = 0;
     while (fgets(buffer, GRID_SIZE+1, fptr) != NULL) {
+        if (buffer[0] == '\n') {
+            continue;
+        }
         puzzle[row] = (int*) malloc(sizeof(int) * GRID_SIZE);
         for (int i = 0; i < GRID_SIZE; i++) {
             int numVal = buffer[i] - '0';
