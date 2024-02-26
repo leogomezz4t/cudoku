@@ -1,5 +1,5 @@
-
 sudoku.txt
+make.bat
 
 # ignore all prototyping python scripts
 *.py
