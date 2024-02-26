@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../include/parser.h"
 
 #define GRID_SIZE 9
@@ -10,7 +11,8 @@
     0: detected improper string
     1: valid
 */
-int readPuzzle(char *filepath, int pathLength, int** puzzle) {
+int readPuzzle(char *filepath, int** puzzle) {
+    int pathLength = strlen(filepath);
     if (filepath[pathLength-1] != '\0') { // make sure the string is nul terminated
         return 0;
     }

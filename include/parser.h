@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Constants
 #define GRID_SIZE 9
@@ -14,7 +15,7 @@
     0: detected improper string
     1: valid
 */
-int readPuzzle(char *filepath, int pathLength, int** puzzle);
+int readPuzzle(char *filepath, int** puzzle);
 
 
 #endif
