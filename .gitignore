@@ -3,7 +3,7 @@ make.bat
 cudoku.exe
 
 # ignore my playground testing file
-./tests/playground.cs
+tests/playground.c
 play.bat
 playground.exe
 
