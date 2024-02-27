@@ -9,8 +9,8 @@ typedef struct set {
 } Set;
 
 /*
-    Returns a Set struct pointer containing an int array with the intersection of two unique int arrays
+    Returns a Set struct pointer containing an int array with the intersection of three unique int arrays
 */
-Set *intersection(int* setA, int aLen, int* setB, int bLen);
+Set *intersection(int* setA, int aLen, int* setB, int bLen, int* setC, int cLen);
 
 #endif
