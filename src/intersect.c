@@ -6,7 +6,7 @@
     Returns a Set struct pointer containing an int array with the intersection of three unique int arrays
 */
 Set* intersection(int *setA, int aLen, int *setB, int bLen, int *setC, int cLen) {
-    Set *ret = malloc(sizeof(Set));
+    Set *ret = (Set*) malloc(sizeof(Set));
     ret->array = (int*) malloc(sizeof(int) * (aLen + bLen + cLen));
     int len = 0;
     int current = 0;
