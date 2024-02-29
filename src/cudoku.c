@@ -8,6 +8,8 @@
 #include "../include/utils.h"
 #include "../include/cudoku.h"
 
+int numRecursions = 0;
+
 int* getColumn(int **puzzle, int x) {
     int *array = (int*) malloc(sizeof(int) * GRID_SIZE);
     for (int i = 0; i < GRID_SIZE; i++) {
@@ -17,45 +19,56 @@ int* getColumn(int **puzzle, int x) {
 }
 
 int solve(int **puzzle) {
+    numRecursions++;
+    int zeroesFound = 0;
     // Iterate through each cell
     for (int i = 0; i < GRID_SIZE; i++) {
         int *row = puzzle[i];
         for (int j = 0; j < GRID_SIZE; j++) {
+            int cell = puzzle[i][j];
+            if (cell != 0) { // If the element is already defined don't change it
+                continue;
+            }
+            // increment zeroes
+            zeroesFound++;
+            // -----
             int *column = getColumn(puzzle, j); // Must be freed
             int *gridArray = getGridArray(puzzle, j, i); // Must be freed
-            Set *missingRow, *missingColumn, *missingGrid;
-            missingRow = getMissingNumbers(row);
+            Set *missingRow, *missingColumn, *missingGrid; // all must be freed
+            missingRow = getMissingNumbers(row); 
             missingColumn = getMissingNumbers(column);
             missingGrid = getMissingNumbers(gridArray);
             // free the original arrays
             free(gridArray);
             free(column);
             // ----
-            int cell = puzzle[i][j];
 
-            //printf("\nmissing column: ");
-            //printArray(missingColumn->array, missingColumn->length);
-            //printf("\nmissing grid: ");
-            //printArray(missingGrid->array, missingGrid->length);
-            //printf("\n");
+            Set *commonValues = intersection(
+                missingRow->array, missingRow->length,
+                missingColumn->array, missingColumn->length,
+                missingGrid->array, missingGrid->length
+            );
 
-            Set * commonValues = intersection(row, GRID_SIZE, column, GRID_SIZE, gridArray, GRID_SIZE);
-            printf("common len: %d\n", commonValues->length);
-            /*
-            printArray(row, GRID_SIZE);
-            printArray(column, GRID_SIZE);
-            printArray(gridArray, GRID_SIZE);
-            */
-            printf("intersection of x: %d y: %d is ", j, i);
-            printArray(commonValues->array, commonValues->length);
-            printf("\n");
+            if (commonValues->length == 1) {
+                //printf("found answer at i: %d j: %d\n", i, j);
+                puzzle[i][j] = commonValues->array[0];
+                zeroesFound--;
+            }
             
             // Free everyone
             free(gridArray);
             free(missingRow);
             free(missingColumn);
             free(missingGrid);
-            //free(commonValues);
+            free(commonValues);
         }
+    }
+
+    // check if it has been solved
+    if (zeroesFound > 0) {
+        printf("another recursion with %d zeroes found\n", zeroesFound);
+        solve(puzzle);
+    } else {
+        printf("Solved with %d recursions\n", numRecursions);
     }
 }
