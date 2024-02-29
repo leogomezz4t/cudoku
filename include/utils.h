@@ -6,6 +6,8 @@
 
 void printPuzzle(int **matrix);
 
+void printGrid(int **grid);
+
 void printArray(int *arr, int len);
 
 #endif
