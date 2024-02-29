@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "../include/constants.h"
 #include "../include/intersect.h"
 
 /*
@@ -29,6 +30,23 @@ Set* intersection(int *setA, int aLen, int *setB, int bLen, int *setC, int cLen)
     }
     ret->array = (int*) realloc(ret->array, sizeof(int) * len);
     ret->length = len;
+    return ret;
+}
+
+Set *getMissingNumbers(int *inputArray) {
+    Set *ret = (Set*) malloc(sizeof(Set));
+    ret->array = (int*) malloc(sizeof(int) * GRID_SIZE);
+    int currentIndex = 0;
+    for (int i = 1; i <= GRID_SIZE; i++) {
+        if (contains(inputArray, GRID_SIZE, i)) {
+            continue;
+        }
+        ret->array[currentIndex] = i;
+        currentIndex++;
+    }
+    ret->length = currentIndex;
+    ret->array = (int*) realloc(ret->array, sizeof(int) * ret->length);
+
     return ret;
 }
 
