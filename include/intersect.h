@@ -13,4 +13,6 @@ typedef struct set {
 */
 Set *intersection(int* setA, int aLen, int* setB, int bLen, int* setC, int cLen);
 
+int contains(int *arr, int len, int val);
+
 #endif

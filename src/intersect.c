@@ -19,6 +19,9 @@ Set* intersection(int *setA, int aLen, int *setB, int bLen, int *setC, int cLen)
                 if (setA[i] != setC[k]) {
                     continue;
                 }
+                if (contains(ret->array, aLen+bLen+cLen, setA[i])) {
+                    continue;
+                }
                 ret->array[current] = setA[i];
                 len++;
                 current++;
@@ -28,4 +31,14 @@ Set* intersection(int *setA, int aLen, int *setB, int bLen, int *setC, int cLen)
     ret->array = (int*) realloc(ret->array, sizeof(int) * len);
     ret->length = len;
     return ret;
+}
+
+int contains(int *arr, int len, int val) {
+    for (int i = 0; i < len; i++) {
+        if (arr[i] == val) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
