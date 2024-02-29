@@ -14,7 +14,7 @@ int* getColumn(int **puzzle, int x) {
     return array;
 }
 
-Point *getGridCoordinates(int **puzzle, int x, int y) {
+Point *getGridCoordinates(int x, int y) {
     for (int i = (GRID_SIZE/3); i >= 0; i--) {
         int currentRowGrid = i*3;
         if (y < currentRowGrid) {
@@ -27,8 +27,8 @@ Point *getGridCoordinates(int **puzzle, int x, int y) {
             }
             // Found grid
             Point *ret = (Point*) malloc(sizeof(Point));
-            ret->x = j;
-            ret->y = i;
+            ret->x = currentColumnGrid;
+            ret->y = currentRowGrid;
             return ret;
         }
     }
@@ -37,7 +37,7 @@ Point *getGridCoordinates(int **puzzle, int x, int y) {
 int** getGrid(int **puzzle, int x, int y) {
     int **returnGrid = (int**) malloc(sizeof(int*) * 3);
     // Get the coordinates of the grid
-    Point *coords = getGridCoordinates(puzzle, x, y);
+    Point *coords = getGridCoordinates(x, y);
     for (int i = 0; i < 3; i++) {
          returnGrid[i] = (int*) malloc(sizeof(int) * 3);
          for (int j = 0; j < 3; j++) {
@@ -50,15 +50,37 @@ int** getGrid(int **puzzle, int x, int y) {
     return returnGrid;
 }
 
+int *getGridArray(int **puzzle, int x, int y) {
+    int *returnArray = (int*) malloc(sizeof(int) * 9);
+    int currentIndex = 0;
+    // Get the coordinates of the grid
+    Point *coords = getGridCoordinates(x, y);
+    for (int i = 0; i < 3; i++) {
+         for (int j = 0; j < 3; j++) {
+            int adjustedRow = (coords->y) + i;
+            int adjustedCol = (coords->x) + j;
+            returnArray[currentIndex] = puzzle[adjustedRow][adjustedCol];
+
+            currentIndex++;
+         }
+    }
+
+    return returnArray;
+}
+
 int solve(int **puzzle) {
     // Iterate through each cell
     for (int i = 0; i < GRID_SIZE; i++) {
         int *row = puzzle[i];
         for (int j = 0; j < GRID_SIZE; j++) {
             int *column = getColumn(puzzle, j);
-            int **grid = getGrid(puzzle, j, i);
+            int *gridArray = getGridArray(puzzle, j, i);
             int cell = puzzle[i][j];
 
+
+            
+            // Free everyone
+            free(gridArray);
             break;
         }
     }
