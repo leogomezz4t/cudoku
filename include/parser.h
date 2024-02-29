@@ -1,12 +1,10 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include "../include/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// Constants
-#define GRID_SIZE 9
 
 // Functions
 /*

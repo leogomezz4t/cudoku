@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../include/constants.h"
 #include "../include/parser.h"
-
-#define GRID_SIZE 9
 
 /*
     Returns an error code
