@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../include/parser.h"
+#include "../include/constants.h"
 
 void printPuzzle(int **matrix) {
     printf("[\n");

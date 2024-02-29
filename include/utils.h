@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 #include "../include/constants.h"
-#include "../include/parser.h"
 
 void printPuzzle(int **matrix);
 
