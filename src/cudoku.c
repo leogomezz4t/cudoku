@@ -21,9 +21,23 @@ int solve(int **puzzle) {
     for (int i = 0; i < GRID_SIZE; i++) {
         int *row = puzzle[i];
         for (int j = 0; j < GRID_SIZE; j++) {
-            int *column = getColumn(puzzle, j);
-            int *gridArray = getGridArray(puzzle, j, i);
+            int *column = getColumn(puzzle, j); // Must be freed
+            int *gridArray = getGridArray(puzzle, j, i); // Must be freed
+            Set *missingRow, *missingColumn, *missingGrid;
+            missingRow = getMissingNumbers(row);
+            missingColumn = getMissingNumbers(column);
+            missingGrid = getMissingNumbers(gridArray);
+            // free the original arrays
+            free(gridArray);
+            free(column);
+            // ----
             int cell = puzzle[i][j];
+
+            //printf("\nmissing column: ");
+            //printArray(missingColumn->array, missingColumn->length);
+            //printf("\nmissing grid: ");
+            //printArray(missingGrid->array, missingGrid->length);
+            //printf("\n");
 
             Set * commonValues = intersection(row, GRID_SIZE, column, GRID_SIZE, gridArray, GRID_SIZE);
             printf("common len: %d\n", commonValues->length);
@@ -38,7 +52,10 @@ int solve(int **puzzle) {
             
             // Free everyone
             free(gridArray);
-            free(commonValues);
+            free(missingRow);
+            free(missingColumn);
+            free(missingGrid);
+            //free(commonValues);
         }
     }
 }
