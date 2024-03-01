@@ -55,6 +55,27 @@ Set *getMissingNumbers(int *inputArray) {
     return ret;
 }
 
+int existsIn(int *arrayA, int *aLen, int *arrayB, int bLen) {
+    if (aLen > bLen) {
+        return 0;
+    }
+    
+    for (int i = 0; i < aLen; i++) {
+        int found = 0;
+        for (int j = 0; j < bLen; j++) {
+            if (arrayA[i] == arrayB[j]) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 int contains(int *arr, int len, int val) {
     for (int i = 0; i < len; i++) {
         if (arr[i] == val) {

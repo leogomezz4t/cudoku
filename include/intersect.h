@@ -19,6 +19,8 @@ Set *intersection(int* setA, int aLen, int* setB, int bLen, int* setC, int cLen)
 */
 Set *getMissingNumbers(int *inputArray);
 
+int existsIn(int *arrayA, int *aLen, int *arrayB, int bLen);
+
 int contains(int *arr, int len, int val);
 
 #endif
