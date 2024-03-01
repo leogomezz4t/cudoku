@@ -16,35 +16,6 @@ int* getColumn(int **puzzle, int x) {
     return array;
 }
 
-Set* getPossibleValues(int **puzzle, int i, int j) {
-    int *row = puzzle[i];
-    int *column = getColumn(puzzle, j); // Must be freed
-    int *gridArray = getGridArray(puzzle, j, i); // Must be freed
-    Set *missingRow, *missingColumn, *missingGrid; // all must be freed
-    missingRow = getMissingNumbers(row); 
-    missingColumn = getMissingNumbers(column);
-    missingGrid = getMissingNumbers(gridArray);
-
-    Set *possibleValues = intersection(
-        missingRow->array, missingRow->length,
-        missingColumn->array, missingColumn->length,
-        missingGrid->array, missingGrid->length
-    );
-
-    // Free my boy
-    free(column);
-    free(gridArray);
-
-    free(missingRow->array);
-    free(missingColumn->array);
-    free(missingGrid->array);
-    free(missingRow);
-    free(missingColumn);
-    free(missingGrid);
-
-    return possibleValues;
-}
-
 int solve(int **puzzle) {
     int numRecursions = 0;
     solveRecursor(puzzle,0, -1);
@@ -78,35 +49,33 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
                 //printf("found answer at i: %d j: %d\n", i, j);
                 puzzle[i][j] = possibleValues->array[0];
                 zeroesFound--;
-            } else if (possibleValues->length == 2) { // Obvious Pairs
-                // Iterate through the zeroes in the grid
-                for (int gi = 0; gi < 3; gi++) {
-                    for (int gj = 0; gj < 3; gj++) {
-                        int gridI = gridCoordinates->y + gi;
-                        int gridJ = gridCoordinates->x + gj;
-                        int gridCell = puzzle[gridI][gridJ];
-                        
-                        if (gridCell != 0) {
-                            continue;
-                        }
+            }
+            if (possibleValues->length == 2) { // Obvious Pairs
+                Point* obviousPair = findObviousPair(puzzle, i, j);
+                if (obviousPair->x != -1) { // found obvious pair
+                    // iterate through the grid
+                    for (int gi = 0; gi < 3; gi++) {
+                        for (int gj = 0; gj < 3; gj++) {
+                            int gridI = gridCoordinates->y + gi;
+                            int gridJ = gridCoordinates->x + gj;
+                            int gridCell = puzzle[gridI][gridJ];
 
-                        Set* gridCellPossibleValues = getPossibleValues(puzzle, gridI, gridJ);
+                            // dont remove notes from the obvious pair
+                            if (gridI == obviousPair->y && gridJ == obviousPair->x) {
+                                continue;
+                            }
+
+                            Set *gridPossibleValues = getPossibleValues(puzzle, gridI, gridJ);
+
+                            // TODO: remove the pair values from the grid possible values and check for obvious singles
+                        }
                     }
                 }
             }
             
             // Free everyone
-            free(gridCoordinates);
-
-            free(missingRow->array);
-            free(missingColumn->array);
-            free(missingGrid->array);
-            free(possibleValues->array);
-
-            free(missingRow);
-            free(missingColumn);
-            free(missingGrid);
             free(possibleValues);
+            free(gridCoordinates);
         }
     }
 
