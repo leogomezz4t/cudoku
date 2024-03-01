@@ -14,4 +14,6 @@ int* getColumn(int **puzzle, int x);
 
 int solve(int **puzzle);
 
+void solveRecursor(int **puzzle, int numRecursions, int lastZeroes);
+
 #endif
