@@ -1,6 +1,8 @@
 sudoku.txt
-make.bat
 cudoku.exe
+
+# ignore all scripts
+*.bat
 
 # ignore my playground testing file
 tests/playground.c
