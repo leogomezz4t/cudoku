@@ -27,6 +27,7 @@ void printGrid(int **grid) {
 
 void printArray(int *arr, int len) {
     if (len <= 0) {
+        printf("[]\n")
         return;
     }
     printf("[");
