@@ -85,3 +85,32 @@ int contains(int *arr, int len, int val) {
 
     return 0;
 }
+
+Set* getPossibleValues(int **puzzle, int i, int j) {
+    int *row = puzzle[i];
+    int *column = getColumn(puzzle, j); // Must be freed
+    int *gridArray = getGridArray(puzzle, j, i); // Must be freed
+    Set *missingRow, *missingColumn, *missingGrid; // all must be freed
+    missingRow = getMissingNumbers(row); 
+    missingColumn = getMissingNumbers(column);
+    missingGrid = getMissingNumbers(gridArray);
+
+    Set *possibleValues = intersection(
+        missingRow->array, missingRow->length,
+        missingColumn->array, missingColumn->length,
+        missingGrid->array, missingGrid->length
+    );
+
+    // Free my boy
+    free(column);
+    free(gridArray);
+
+    free(missingRow->array);
+    free(missingColumn->array);
+    free(missingGrid->array);
+    free(missingRow);
+    free(missingColumn);
+    free(missingGrid);
+
+    return possibleValues;
+}

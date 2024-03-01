@@ -23,4 +23,6 @@ int existsIn(int *arrayA, int *aLen, int *arrayB, int bLen);
 
 int contains(int *arr, int len, int val);
 
+Set* getPossibleValues(int **puzzle, int i, int j);
+
 #endif
