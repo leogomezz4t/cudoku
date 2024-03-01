@@ -38,6 +38,7 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
             // -----
             int *column = getColumn(puzzle, j); // Must be freed
             int *gridArray = getGridArray(puzzle, j, i); // Must be freed
+            Point* gridCoordinates = getGridCoordinates(j, i); // must be freed
             Set *missingRow, *missingColumn, *missingGrid; // all must be freed
             missingRow = getMissingNumbers(row); 
             missingColumn = getMissingNumbers(column);
@@ -75,13 +76,32 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
             printArray(commonValues->array, commonValues->length);
             printf("\n");
             */
-            if (commonValues->length == 1) {
+            if (commonValues->length == 1) { // Obvious Singles
                 //printf("found answer at i: %d j: %d\n", i, j);
                 puzzle[i][j] = commonValues->array[0];
                 zeroesFound--;
+            } else if (commonValues->length == 2) { // Obvious Pairs
+                // Iterate through the zeroes in the grid
+                for (int gi = 0; gi < 3; gi++) {
+                    for (int gj = 0; gj < 3; gj++) {
+                        int gridCell = puzzle[
+                            gridCoordinates->y + gi
+                        ][
+                            gridCoordinates->x + gj
+                        ];
+                        
+                        if (gridCell != 0) {
+                            continue;
+                        }
+
+                        
+                    }
+                }
             }
             
             // Free everyone
+            free(gridCoordinates);
+
             free(missingRow->array);
             free(missingColumn->array);
             free(missingGrid->array);
