@@ -7,7 +7,12 @@
 */
 Set* intersection(int *setA, int aLen, int *setB, int bLen, int *setC, int cLen) {
     Set *ret = (Set*) malloc(sizeof(Set));
-    ret->array = (int*) malloc(sizeof(int) * (aLen + bLen + cLen));
+    ret->length = aLen + bLen + cLen;
+    ret->array = (int*) malloc(sizeof(int) * (ret->length));
+    // Populate array with -1s
+    for (int i = 0; i < ret->length; i++) {
+        ret->array[i] = -1;
+    }
     int len = 0;
     int current = 0;
     for (int i = 0; i < aLen; i++) {
@@ -19,7 +24,7 @@ Set* intersection(int *setA, int aLen, int *setB, int bLen, int *setC, int cLen)
                 if (setA[i] != setC[k]) {
                     continue;
                 }
-                if (contains(ret->array, aLen+bLen+cLen, setA[i])) {
+                if (contains(ret->array, ret->length, setA[i])) {
                     continue;
                 }
                 ret->array[current] = setA[i];
