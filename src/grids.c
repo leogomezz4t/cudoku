@@ -1,5 +1,6 @@
 #include "../include/constants.h"
 #include "../include/grids.h"
+#include "../include/intersect.h"
 #include <stdlib.h>
 
 Point *getGridCoordinates(int x, int y) {
@@ -54,4 +55,37 @@ int *getGridArray(int **puzzle, int x, int y) {
     }
 
     return returnArray;
+}
+
+Point *findObviousPair(int **puzzle, int i, int j) {
+    Point* gridCoordinates = getGridCoordinates(j, i); // must be freed
+    Point *ret = (Point*) malloc(sizeof(Point));
+    // Iterate through the zeroes in the grid
+    for (int gi = 0; gi < 3; gi++) {
+        for (int gj = 0; gj < 3; gj++) {
+            int gridI = gridCoordinates->y + gi;
+            int gridJ = gridCoordinates->x + gj;
+            int gridCell = puzzle[gridI][gridJ];
+            
+            if (gridCell != 0) {
+                continue;
+            }
+
+            Set* gridCellPossibleValues = getPossibleValues(puzzle, gridI, gridJ);
+            if (existsIn(
+                possibleValues->array, possibleValues->length,
+                gridCellPossibleValues->array, gridCellPossibleValues->length)
+                && gridCellPossibleValues->length == 2) { // obvious pair confirmed
+                    free(gridCoordinates);
+                    ret->x = gridJ;
+                    ret->y = gridI;
+                    return ret;
+                }
+        }
+    }
+
+    free(gridCoordinates);
+    ret->x = -1;
+    ret->y = -1;
+    return ret;
 }
