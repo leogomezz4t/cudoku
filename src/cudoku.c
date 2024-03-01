@@ -16,6 +16,35 @@ int* getColumn(int **puzzle, int x) {
     return array;
 }
 
+Set* getPossibleValues(int **puzzle, int i, int j) {
+    int *row = puzzle[i];
+    int *column = getColumn(puzzle, j); // Must be freed
+    int *gridArray = getGridArray(puzzle, j, i); // Must be freed
+    Set *missingRow, *missingColumn, *missingGrid; // all must be freed
+    missingRow = getMissingNumbers(row); 
+    missingColumn = getMissingNumbers(column);
+    missingGrid = getMissingNumbers(gridArray);
+
+    Set *possibleValues = intersection(
+        missingRow->array, missingRow->length,
+        missingColumn->array, missingColumn->length,
+        missingGrid->array, missingGrid->length
+    );
+
+    // Free my boy
+    free(column);
+    free(gridArray);
+
+    free(missingRow->array);
+    free(missingColumn->array);
+    free(missingGrid->array);
+    free(missingRow);
+    free(missingColumn);
+    free(missingGrid);
+
+    return possibleValues;
+}
+
 int solve(int **puzzle) {
     int numRecursions = 0;
     solveRecursor(puzzle,0, -1);
@@ -36,65 +65,32 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
             // increment zeroes
             zeroesFound++;
             // -----
-            int *column = getColumn(puzzle, j); // Must be freed
-            int *gridArray = getGridArray(puzzle, j, i); // Must be freed
+
             Point* gridCoordinates = getGridCoordinates(j, i); // must be freed
-            Set *missingRow, *missingColumn, *missingGrid; // all must be freed
-            missingRow = getMissingNumbers(row); 
-            missingColumn = getMissingNumbers(column);
-            missingGrid = getMissingNumbers(gridArray);
-            //printf("i: %d j: %d\n", i, j);
-            /*
-            printf("Row: ");
-            printArray(row, GRID_SIZE);
-            printf("Column: ");
-            printArray(column, GRID_SIZE);
-            printf("grid: ");
-            printArray(gridArray, GRID_SIZE);
-            printf("\n");
-            */
-            // free the original arrays
-            free(gridArray);
-            free(column);
-            // ----
-            /*
-            printf("missing row: ");
-            printArray(missingRow->array, missingRow->length);
-            printf("missing column: ");
-            printArray(missingColumn->array, missingColumn->length);
-            printf("missing grid: ");
-            printArray(missingGrid->array, missingGrid->length);
-            printf("\n");
-            */
-            Set *commonValues = intersection(
-                missingRow->array, missingRow->length,
-                missingColumn->array, missingColumn->length,
-                missingGrid->array, missingGrid->length
-            );
+
+            Set *possibleValues = getPossibleValues(puzzle, i, j);
             /*
             printf("intersect: ");
-            printArray(commonValues->array, commonValues->length);
+            printArray(possibleValues->array, possibleValues->length);
             printf("\n");
             */
-            if (commonValues->length == 1) { // Obvious Singles
+            if (possibleValues->length == 1) { // Obvious Singles
                 //printf("found answer at i: %d j: %d\n", i, j);
-                puzzle[i][j] = commonValues->array[0];
+                puzzle[i][j] = possibleValues->array[0];
                 zeroesFound--;
-            } else if (commonValues->length == 2) { // Obvious Pairs
+            } else if (possibleValues->length == 2) { // Obvious Pairs
                 // Iterate through the zeroes in the grid
                 for (int gi = 0; gi < 3; gi++) {
                     for (int gj = 0; gj < 3; gj++) {
-                        int gridCell = puzzle[
-                            gridCoordinates->y + gi
-                        ][
-                            gridCoordinates->x + gj
-                        ];
+                        int gridI = gridCoordinates->y + gi;
+                        int gridJ = gridCoordinates->x + gj;
+                        int gridCell = puzzle[gridI][gridJ];
                         
                         if (gridCell != 0) {
                             continue;
                         }
 
-                        
+                        Set* gridCellPossibleValues = getPossibleValues(puzzle, gridI, gridJ);
                     }
                 }
             }
@@ -105,12 +101,12 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
             free(missingRow->array);
             free(missingColumn->array);
             free(missingGrid->array);
-            free(commonValues->array);
+            free(possibleValues->array);
 
             free(missingRow);
             free(missingColumn);
             free(missingGrid);
-            free(commonValues);
+            free(possibleValues);
         }
     }
 
