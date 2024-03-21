@@ -55,7 +55,7 @@ Set *getMissingNumbers(int *inputArray) {
     return ret;
 }
 
-int existsIn(int *arrayA, int *aLen, int *arrayB, int bLen) {
+int existsIn(int *arrayA, int aLen, int *arrayB, int bLen) {
     if (aLen > bLen) {
         return 0;
     }
