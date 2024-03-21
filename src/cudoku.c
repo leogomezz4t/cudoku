@@ -1,12 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../include/types.h"
-#include "../include/grids.h"
-#include "../include/constants.h"
-#include "../include/intersect.h"
-#include "../include/parser.h"
-#include "../include/utils.h"
 #include "../include/cudoku.h"
 
 int solve(int **puzzle) {

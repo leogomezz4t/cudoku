@@ -1,8 +1,5 @@
 #include <stdlib.h>
-#include "../include/constants.h"
-#include "../include/types.h"
 #include "../include/intersect.h"
-#include "../include/grids.h"
 
 /*
     Returns a Set struct pointer containing an int array with the intersection of three unique int arrays

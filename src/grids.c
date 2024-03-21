@@ -1,7 +1,4 @@
-#include "../include/constants.h"
-#include "../include/types.h"
 #include "../include/grids.h"
-#include "../include/intersect.h"
 #include <stdlib.h>
 
 int* getColumn(int **puzzle, int x) {
