@@ -1,7 +1,16 @@
 #include "../include/constants.h"
+#include "../include/types.h"
 #include "../include/grids.h"
 #include "../include/intersect.h"
 #include <stdlib.h>
+
+int* getColumn(int **puzzle, int x) {
+    int *array = (int*) malloc(sizeof(int) * GRID_SIZE);
+    for (int i = 0; i < GRID_SIZE; i++) {
+        array[i] = puzzle[i][x];
+    }
+    return array;
+}
 
 Point *getGridCoordinates(int x, int y) {
     for (int i = (GRID_SIZE/3); i >= 0; i--) {
@@ -57,7 +66,7 @@ int *getGridArray(int **puzzle, int x, int y) {
     return returnArray;
 }
 
-Point *findObviousPair(int **puzzle, int i, int j) {
+Point *findObviousPair(int **puzzle, int i, int j, Set* possibleValues) {
     Point* gridCoordinates = getGridCoordinates(j, i); // must be freed
     Point *ret = (Point*) malloc(sizeof(Point));
     // Iterate through the zeroes in the grid

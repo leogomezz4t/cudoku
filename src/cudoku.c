@@ -1,20 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../include/types.h"
 #include "../include/grids.h"
 #include "../include/constants.h"
 #include "../include/intersect.h"
 #include "../include/parser.h"
 #include "../include/utils.h"
 #include "../include/cudoku.h"
-
-int* getColumn(int **puzzle, int x) {
-    int *array = (int*) malloc(sizeof(int) * GRID_SIZE);
-    for (int i = 0; i < GRID_SIZE; i++) {
-        array[i] = puzzle[i][x];
-    }
-    return array;
-}
 
 int solve(int **puzzle) {
     int numRecursions = 0;
@@ -51,7 +44,7 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
                 zeroesFound--;
             }
             if (possibleValues->length == 2) { // Obvious Pairs
-                Point* obviousPair = findObviousPair(puzzle, i, j);
+                Point* obviousPair = findObviousPair(puzzle, i, j, possibleValues); // must be freed
                 if (obviousPair->x != -1) { // found obvious pair
                     // iterate through the grid
                     for (int gi = 0; gi < 3; gi++) {
@@ -71,6 +64,8 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
                         }
                     }
                 }
+
+                free(obviousPair);
             }
             
             // Free everyone
