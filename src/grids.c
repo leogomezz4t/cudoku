@@ -87,6 +87,8 @@ Point *findObviousPair(int **puzzle, int i, int j, Set* possibleValues) {
                     ret->y = gridI;
                     return ret;
                 }
+            free(gridCellPossibleValues->array);
+            free(gridCellPossibleValues);
         }
     }
 
