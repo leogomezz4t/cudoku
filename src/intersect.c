@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include "../include/constants.h"
 #include "../include/intersect.h"
 
 /*
@@ -55,6 +54,27 @@ Set *getMissingNumbers(int *inputArray) {
     return ret;
 }
 
+int existsIn(int *arrayA, int aLen, int *arrayB, int bLen) {
+    if (aLen > bLen) {
+        return 0;
+    }
+    
+    for (int i = 0; i < aLen; i++) {
+        int found = 0;
+        for (int j = 0; j < bLen; j++) {
+            if (arrayA[i] == arrayB[j]) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 int contains(int *arr, int len, int val) {
     for (int i = 0; i < len; i++) {
         if (arr[i] == val) {
@@ -63,4 +83,65 @@ int contains(int *arr, int len, int val) {
     }
 
     return 0;
+}
+
+Set* getPossibleValues(int **puzzle, int i, int j) {
+    int *row = puzzle[i];
+    int *column = getColumn(puzzle, j); // Must be freed
+    int *gridArray = getGridArray(puzzle, j, i); // Must be freed
+    Set *missingRow, *missingColumn, *missingGrid; // all must be freed
+    missingRow = getMissingNumbers(row); 
+    missingColumn = getMissingNumbers(column);
+    missingGrid = getMissingNumbers(gridArray);
+
+    Set *possibleValues = intersection(
+        missingRow->array, missingRow->length,
+        missingColumn->array, missingColumn->length,
+        missingGrid->array, missingGrid->length
+    );
+
+    // Free my boy
+    free(column);
+    free(gridArray);
+
+    free(missingRow->array);
+    free(missingColumn->array);
+    free(missingGrid->array);
+    free(missingRow);
+    free(missingColumn);
+    free(missingGrid);
+
+    return possibleValues;
+}
+
+Set* removeElements(Set* inputSet, Set* elementsToRemove) {
+    Set* ret = (Set*) malloc(sizeof(Set));
+    ret->array = (int*) malloc(sizeof(int) * inputSet->length);
+    ret->length = 0;
+
+    for (int i = 0; i < inputSet->length; i++) {
+        int matched = 0;
+        int inputElement = inputSet->array[i];
+
+        for (int j = 0; j < elementsToRemove->length; j++) {
+            int removeElement = elementsToRemove->array[j];
+
+            if (inputElement == removeElement) {
+                matched = 1;
+                continue;
+            }
+        }
+
+        if (matched) {
+            continue;
+        }
+
+        // Add element
+        ret->array[ret->length] = inputElement;
+        ret->length++;
+    }
+
+    realloc(ret->array, sizeof(int) * ret->length);
+    
+    return ret;
 }

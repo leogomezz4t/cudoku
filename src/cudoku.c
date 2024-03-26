@@ -1,20 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../include/grids.h"
-#include "../include/constants.h"
-#include "../include/intersect.h"
-#include "../include/parser.h"
-#include "../include/utils.h"
 #include "../include/cudoku.h"
-
-int* getColumn(int **puzzle, int x) {
-    int *array = (int*) malloc(sizeof(int) * GRID_SIZE);
-    for (int i = 0; i < GRID_SIZE; i++) {
-        array[i] = puzzle[i][x];
-    }
-    return array;
-}
 
 int solve(int **puzzle) {
     int numRecursions = 0;
@@ -36,61 +23,69 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
             // increment zeroes
             zeroesFound++;
             // -----
-            int *column = getColumn(puzzle, j); // Must be freed
-            int *gridArray = getGridArray(puzzle, j, i); // Must be freed
-            Set *missingRow, *missingColumn, *missingGrid; // all must be freed
-            missingRow = getMissingNumbers(row); 
-            missingColumn = getMissingNumbers(column);
-            missingGrid = getMissingNumbers(gridArray);
-            //printf("i: %d j: %d\n", i, j);
-            /*
-            printf("Row: ");
-            printArray(row, GRID_SIZE);
-            printf("Column: ");
-            printArray(column, GRID_SIZE);
-            printf("grid: ");
-            printArray(gridArray, GRID_SIZE);
-            printf("\n");
-            */
-            // free the original arrays
-            free(gridArray);
-            free(column);
-            // ----
-            /*
-            printf("missing row: ");
-            printArray(missingRow->array, missingRow->length);
-            printf("missing column: ");
-            printArray(missingColumn->array, missingColumn->length);
-            printf("missing grid: ");
-            printArray(missingGrid->array, missingGrid->length);
-            printf("\n");
-            */
-            Set *commonValues = intersection(
-                missingRow->array, missingRow->length,
-                missingColumn->array, missingColumn->length,
-                missingGrid->array, missingGrid->length
-            );
+
+            Point* gridCoordinates = getGridCoordinates(j, i); // must be freed
+
+            Set *possibleValues = getPossibleValues(puzzle, i, j);
             /*
             printf("intersect: ");
-            printArray(commonValues->array, commonValues->length);
+            printArray(possibleValues->array, possibleValues->length);
             printf("\n");
             */
-            if (commonValues->length == 1) {
+            if (possibleValues->length == 1) { // Obvious Singles
                 //printf("found answer at i: %d j: %d\n", i, j);
-                puzzle[i][j] = commonValues->array[0];
+                puzzle[i][j] = possibleValues->array[0];
                 zeroesFound--;
+            }
+            if (possibleValues->length == 2) { // Obvious Pairs
+                Point* obviousPair = findObviousPair(puzzle, i, j, possibleValues); // must be freed
+                // THE OBVIOUS PAIR IS THE COUNTERPART TO THIS CELL IN A PAIR
+                if (obviousPair->x != -1) { // found obvious pair
+                    //printf("FOUND OBVIOUS PAIR\nCoordinates x: %i y: %i\n", obviousPair->x, obviousPair->y);
+                    // iterate through the grid
+                    for (int gi = 0; gi < 3; gi++) {
+                        for (int gj = 0; gj < 3; gj++) {
+                            int gridI = gridCoordinates->y + gi;
+                            int gridJ = gridCoordinates->x + gj;
+                            int gridCell = puzzle[gridI][gridJ];
+
+                            // dont remove notes from the obvious pair
+                            if (gridI == obviousPair->y && gridJ == obviousPair->x) {
+                                continue;
+                            }
+
+                            Set *gridPossibleValues = getPossibleValues(puzzle, gridI, gridJ);
+
+                            // TODO: remove the pair values from the grid possible values and check for obvious singles
+                            //printf("BEFORE\n");
+                            //printArray(gridPossibleValues->array, gridPossibleValues->length);
+                            Set* trimmedElements = removeElements(gridPossibleValues, possibleValues);
+                            //printf("AFTER\n");
+                            //printArray(trimmedElements->array, trimmedElements->length);
+
+                            // Check if obvious single is left
+                            if (trimmedElements->length == 1) {
+                                puzzle[gridI][gridJ] = trimmedElements->array[0];
+                                zeroesFound--;
+                            }
+
+                            // free everyone
+                            free(trimmedElements->array);
+                            free(trimmedElements);
+                            free(gridPossibleValues->array);
+                            free(gridPossibleValues);
+                        }
+                    }
+                }
+
+                free(obviousPair);
             }
             
             // Free everyone
-            free(missingRow->array);
-            free(missingColumn->array);
-            free(missingGrid->array);
-            free(commonValues->array);
-
-            free(missingRow);
-            free(missingColumn);
-            free(missingGrid);
-            free(commonValues);
+            free(possibleValues->array);
+            free(possibleValues);
+            
+            free(gridCoordinates);
         }
     }
 

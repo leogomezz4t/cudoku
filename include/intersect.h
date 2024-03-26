@@ -2,12 +2,9 @@
 #define INTERSECT_H
 
 #include "../include/constants.h"
+#include "../include/types.h"
+#include "../include/grids.h"
 #include <stdlib.h>
-
-typedef struct set {
-    int *array;
-    int length;
-} Set;
 
 /*
     Returns a Set struct pointer containing an int array with the intersection of three unique int arrays
@@ -19,6 +16,12 @@ Set *intersection(int* setA, int aLen, int* setB, int bLen, int* setC, int cLen)
 */
 Set *getMissingNumbers(int *inputArray);
 
+int existsIn(int *arrayA, int aLen, int *arrayB, int bLen);
+
 int contains(int *arr, int len, int val);
+
+Set* getPossibleValues(int **puzzle, int i, int j);
+
+Set* removeElements(Set* inputSet, Set* elementsToRemove);
 
 #endif
