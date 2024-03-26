@@ -22,6 +22,6 @@ int contains(int *arr, int len, int val);
 
 Set* getPossibleValues(int **puzzle, int i, int j);
 
-void removeElements(Set* inputSet, Set* elementsToRemove);
+Set* removeElements(Set* inputSet, Set* elementsToRemove);
 
 #endif

@@ -114,8 +114,8 @@ Set* getPossibleValues(int **puzzle, int i, int j) {
     return possibleValues;
 }
 
-void removeElements(Set* inputSet, Set* elementsToRemove) {
-    Set* ret;
+Set* removeElements(Set* inputSet, Set* elementsToRemove) {
+    Set* ret = (Set*) malloc(sizeof(Set));
     ret->array = (int*) malloc(sizeof(int) * inputSet->length);
     ret->length = 0;
 
@@ -142,11 +142,6 @@ void removeElements(Set* inputSet, Set* elementsToRemove) {
     }
 
     realloc(ret->array, sizeof(int) * ret->length);
-    free(inputSet->array);
-    free(inputSet);
-    // Assign ret's address to inputSet
-    inputSet = ret;
-    // free ret
-    free(ret->array);
-    free(ret);
+    
+    return ret;
 }
