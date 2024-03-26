@@ -114,7 +114,7 @@ Set* getPossibleValues(int **puzzle, int i, int j) {
     return possibleValues;
 }
 
-void removeElements(Set* inputSet, int* elementsToRemove, int lengthOfElements) {
+void removeElements(Set* inputSet, Set* elementsToRemove) {
     Set* ret;
     ret->array = (int*) malloc(sizeof(int) * inputSet->length);
     ret->length = 0;
@@ -123,8 +123,8 @@ void removeElements(Set* inputSet, int* elementsToRemove, int lengthOfElements) 
         int matched = 0;
         int inputElement = inputSet->array[i];
 
-        for (int j = 0; j < lengthOfElements; j++) {
-            int removeElement = elementsToRemove[j];
+        for (int j = 0; j < elementsToRemove->length; j++) {
+            int removeElement = elementsToRemove->array[j];
 
             if (inputElement == removeElement) {
                 matched = 1;
