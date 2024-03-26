@@ -39,7 +39,9 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
             }
             if (possibleValues->length == 2) { // Obvious Pairs
                 Point* obviousPair = findObviousPair(puzzle, i, j, possibleValues); // must be freed
+                // THE OBVIOUS PAIR IS THE COUNTERPART TO THIS CELL IN A PAIR
                 if (obviousPair->x != -1) { // found obvious pair
+                    //printf("FOUND OBVIOUS PAIR\nCoordinates x: %i y: %i\n", obviousPair->x, obviousPair->y);
                     // iterate through the grid
                     for (int gi = 0; gi < 3; gi++) {
                         for (int gj = 0; gj < 3; gj++) {
@@ -55,6 +57,23 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
                             Set *gridPossibleValues = getPossibleValues(puzzle, gridI, gridJ);
 
                             // TODO: remove the pair values from the grid possible values and check for obvious singles
+                            //printf("BEFORE\n");
+                            //printArray(gridPossibleValues->array, gridPossibleValues->length);
+                            Set* trimmedElements = removeElements(gridPossibleValues, possibleValues);
+                            //printf("AFTER\n");
+                            //printArray(trimmedElements->array, trimmedElements->length);
+
+                            // Check if obvious single is left
+                            if (trimmedElements->length == 1) {
+                                puzzle[gridI][gridJ] = trimmedElements->array[0];
+                                zeroesFound--;
+                            }
+
+                            // free everyone
+                            free(trimmedElements->array);
+                            free(trimmedElements);
+                            free(gridPossibleValues->array);
+                            free(gridPossibleValues);
                         }
                     }
                 }
@@ -63,7 +82,9 @@ void solveRecursor(int **puzzle, int numRecursions, int lastZeroes) {
             }
             
             // Free everyone
+            free(possibleValues->array);
             free(possibleValues);
+            
             free(gridCoordinates);
         }
     }
