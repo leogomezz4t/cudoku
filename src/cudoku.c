@@ -47,7 +47,7 @@ void obviousPairs(int **puzzle, Point* obviousPair, Point* gridCoordinates, Set*
             if (trimmedElements->length == 1) {
                 printf("changing i: %d j: %d to %d\n", gridI, gridJ, trimmedElements->array[0]);
                 puzzle[gridI][gridJ] = trimmedElements->array[0];
-                *solutionsFound++;
+                (*solutionsFound)++;
             }
 
             // free everyone
@@ -126,6 +126,9 @@ void solveRecursor(int **puzzle, int numRecursions, int method, int currentSolut
         return;
     }
 
+    // update current solutions
+    currentSolutions += solutionsFound;
+
     if (solutionsFound == 0) { // Method hasn't changed any zeroes
         method++; // Try the next method
         if (method == METHOD_END) {
@@ -138,10 +141,10 @@ void solveRecursor(int **puzzle, int numRecursions, int method, int currentSolut
             solveRecursor(puzzle, numRecursions, method, 0);
         } else {
             printf("Trying new method: %d\n", method);
-            solveRecursor(puzzle, numRecursions, method, currentSolutions+solutionsFound);
+            solveRecursor(puzzle, numRecursions, method, currentSolutions);
         }
     } else {
         printf("another recursion with %d zeroes found\n", zeroesFound);
-        solveRecursor(puzzle, numRecursions, method, currentSolutions+solutionsFound);
+        solveRecursor(puzzle, numRecursions, method, currentSolutions);
     }
 }
