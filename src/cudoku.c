@@ -10,7 +10,7 @@
 
 int solve(int **puzzle) {
     int numRecursions = 0;
-    solveRecursor(puzzle,0, OBVIOUS_SINGLE);
+    solveRecursor(puzzle,0, OBVIOUS_SINGLE, 0);
     return numRecursions;
 }
 
@@ -59,7 +59,7 @@ void obviousPairs(int **puzzle, Point* obviousPair, Point* gridCoordinates, Set*
     }
 }
 
-void solveRecursor(int **puzzle, int numRecursions, int method) {
+void solveRecursor(int **puzzle, int numRecursions, int method, int currentSolutions) {
     printf("Currently using method: %d\n", method);
     numRecursions++;
     int zeroesFound = 0;
@@ -79,16 +79,12 @@ void solveRecursor(int **puzzle, int numRecursions, int method) {
             Point* gridCoordinates = getGridCoordinates(j, i); // must be freed
             Set* possibleValues = getPossibleValues(puzzle, i, j);
 
-            /*
+            
             if (possibleValues->length == 0) {
                 printf("ERROR WITH ZERO POSSIBLE VALUES\n");
                 printf("i: %i j: %i\n", i, j);
-            } else {
-                printf("intersect: ");
-                printArray(possibleValues->array, possibleValues->length);
-                printf("\n");
             }
-            */
+            
             if (possibleValues->length == 1 && method == OBVIOUS_SINGLE) { // Obvious Singles
                 //printf("found answer at i: %d j: %d\n", i, j);
                 puzzle[i][j] = possibleValues->array[0];
@@ -98,6 +94,18 @@ void solveRecursor(int **puzzle, int numRecursions, int method) {
                 Point* obviousPair = findObviousPair(puzzle, i, j, possibleValues); // must be freed
                 // THE OBVIOUS PAIR IS THE COUNTERPART TO THIS CELL IN A PAIR
                 if (obviousPair->x != -1) { // found obvious pair
+                    /*
+                    Set* pn = getPossibleValues(puzzle, obviousPair->y, obviousPair->x);
+                    printf("The Obvious pairs are:\n");
+                    printf("i: %d j: %d possible values: ", i, j);
+                    printArray(possibleValues->array, possibleValues->length);
+                    printf("i: %d j: %d possible values: ", obviousPair->y, obviousPair->x);
+                    printArray(pn->array, pn->length);
+                    printf("The puzzle:\n");
+                    printPuzzle(puzzle);
+                    free(pn->array);
+                    free(pn);
+                    */
                     obviousPairs(puzzle, obviousPair, gridCoordinates, possibleValues, &solutionsFound);
                 }
 
@@ -121,14 +129,19 @@ void solveRecursor(int **puzzle, int numRecursions, int method) {
     if (solutionsFound == 0) { // Method hasn't changed any zeroes
         method++; // Try the next method
         if (method == METHOD_END) {
-            printf("repeated number of zeroes detected and no more methods available. unsolvable\n");
-            return;
+            if (currentSolutions == 0) {
+                printf("repeated number of zeroes detected and no more methods available. unsolvable\n");
+                return;
+            }
+            printf("Resetting method.\n");
+            method = OBVIOUS_SINGLE;
+            solveRecursor(puzzle, numRecursions, method, 0);
+        } else {
+            printf("Trying new method: %d\n", method);
+            solveRecursor(puzzle, numRecursions, method, currentSolutions+solutionsFound);
         }
-
-        printf("Trying new method: %d\n", method);
-        solveRecursor(puzzle, numRecursions, method);
     } else {
         printf("another recursion with %d zeroes found\n", zeroesFound);
-        solveRecursor(puzzle, numRecursions, method);
+        solveRecursor(puzzle, numRecursions, method, currentSolutions+solutionsFound);
     }
 }
