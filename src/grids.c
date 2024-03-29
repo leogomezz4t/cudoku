@@ -77,6 +77,10 @@ Point *findObviousPair(int **puzzle, int i, int j, Set* possibleValues) {
                 continue;
             }
 
+            if (gridI == i && gridJ == j) { // Don't match with the original point
+                continue;
+            }
+
             Set* gridCellPossibleValues = getPossibleValues(puzzle, gridI, gridJ);
             if (existsIn(
                 possibleValues->array, possibleValues->length,

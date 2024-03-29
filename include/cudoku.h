@@ -13,6 +13,6 @@
 
 int solve(int **puzzle);
 
-void solveRecursor(int **puzzle, int numRecursions, int lastZeroes);
+void solveRecursor(int **puzzle, int numRecursions, int method, int currentSolutions);
 
 #endif
