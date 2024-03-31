@@ -18,6 +18,12 @@ Set *getMissingNumbers(int *inputArray);
 
 int existsIn(int *arrayA, int aLen, int *arrayB, int bLen);
 
+Set* getUniqueValues(Set* a, Set* b, Set* c);
+
+int elementExistsIn(int element, int *array, int len);
+
+int onlyExistsIn(int *inputArray, int inputLen, int *matchedArray, int matchedLen);
+
 int contains(int *arr, int len, int val);
 
 Set* getPossibleValues(int **puzzle, int i, int j);

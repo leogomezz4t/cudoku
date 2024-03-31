@@ -37,6 +37,45 @@ Set* intersection(int *setA, int aLen, int *setB, int bLen, int *setC, int cLen)
     return ret;
 }
 
+Set* getUniqueValues(Set* a, Set* b, Set* c) {
+    Set* ret = (Set*) malloc(sizeof(Set));
+    ret->length = a->length + b->length + c->length;
+    ret->array = (int*) malloc(sizeof(int) * ret->length);
+    int index = 0;
+
+    for (int i = 0; i < a->length; i++) {
+        if (elementExistsIn(a->array[i], ret->array, index)) {
+            continue;
+        }
+
+        ret->array[index] = a->array[i];
+        index++;
+    }
+
+    for (int i = 0; i < b->length; i++) {
+        if (elementExistsIn(b->array[i], ret->array, index)) {
+            continue;
+        }
+
+        ret->array[index] = b->array[i];
+        index++;
+    }
+
+    for (int i = 0; i < c->length; i++) {
+        if (elementExistsIn(c->array[i], ret->array, index)) {
+            continue;
+        }
+
+        ret->array[index] = c->array[i];
+        index++;
+    }
+
+    ret->length = index;
+    realloc(ret->array, sizeof(int) * ret->length);
+
+    return ret;
+}
+
 Set *getMissingNumbers(int *inputArray) {
     Set *ret = (Set*) malloc(sizeof(Set));
     ret->array = (int*) malloc(sizeof(int) * GRID_SIZE);
@@ -73,6 +112,26 @@ int existsIn(int *arrayA, int aLen, int *arrayB, int bLen) {
     }
 
     return 1;
+}
+
+int onlyExistsIn(int *inputArray, int inputLen, int *matchedArray, int matchedLen) {
+    for (int i = 0; i < inputLen; i++) {
+        if (!elementExistsIn(inputArray[i], matchedArray, matchedLen)) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int elementExistsIn(int element, int *array, int len) {
+    for (int i = 0; i < len; i++) {
+        if (element == array[i]) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 int contains(int *arr, int len, int val) {
