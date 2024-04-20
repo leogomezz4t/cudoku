@@ -6,9 +6,4 @@ typedef struct Point {
     int y;
 } Point;
 
-typedef struct {
-    int *array;
-    int length;
-} Set;
-
 #endif
