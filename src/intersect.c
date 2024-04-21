@@ -1,16 +1,11 @@
 #include <stdlib.h>
 #include "../include/intersect.h"
 
-/*
-    Returns a Set struct pointer containing an int array with the intersection of three unique int arrays
-*/
-Set* intersection(int *setA, int aLen, int *setB, int bLen, int *setC, int cLen) {
-    Set *ret = (Set*) malloc(sizeof(Set));
-    ret->length = aLen + bLen + cLen;
-    ret->array = (int*) malloc(sizeof(int) * (ret->length));
+int intersection(int *buffer, int bufferLength, int *setA, int aLen, int *setB, int bLen, int *setC, int cLen) {
+    
     // Populate array with -1s
-    for (int i = 0; i < ret->length; i++) {
-        ret->array[i] = -1;
+    for (int i = 0; i < bufferLength; i++) {
+        buffer[i] = -1;
     }
     int len = 0;
     int current = 0;
@@ -23,74 +18,66 @@ Set* intersection(int *setA, int aLen, int *setB, int bLen, int *setC, int cLen)
                 if (setA[i] != setC[k]) {
                     continue;
                 }
-                if (contains(ret->array, ret->length, setA[i])) {
+                if (contains(buffer, bufferLength, setA[i])) {
                     continue;
                 }
-                ret->array[current] = setA[i];
+                buffer[current] = setA[i];
                 len++;
                 current++;
+
+                if (len >= bufferLength) {
+                    return -1;
+                }
             }
         }
     }
-    ret->array = (int*) realloc(ret->array, sizeof(int) * len);
-    ret->length = len;
-    return ret;
+    return len;
 }
 
-Set* getUniqueValues(Set* a, Set* b, Set* c) {
-    Set* ret = (Set*) malloc(sizeof(Set));
-    ret->length = a->length + b->length + c->length;
-    ret->array = (int*) malloc(sizeof(int) * ret->length);
+int getUniqueValues(int *buffer, int bufferLength, int* a, int aLength, int* b, int bLength, int* c, int cLength) {
     int index = 0;
 
-    for (int i = 0; i < a->length; i++) {
-        if (elementExistsIn(a->array[i], ret->array, index)) {
+    for (int i = 0; i < aLength; i++) {
+        if (elementExistsIn(a[i], buffer, index)) {
             continue;
         }
 
-        ret->array[index] = a->array[i];
+        buffer[index] = buffer[i];
         index++;
     }
 
-    for (int i = 0; i < b->length; i++) {
-        if (elementExistsIn(b->array[i], ret->array, index)) {
+    for (int i = 0; i < bLength; i++) {
+        if (elementExistsIn(b[i], buffer, index)) {
             continue;
         }
 
-        ret->array[index] = b->array[i];
+        buffer[index] = b[i];
         index++;
     }
 
-    for (int i = 0; i < c->length; i++) {
-        if (elementExistsIn(c->array[i], ret->array, index)) {
+    for (int i = 0; i < cLength; i++) {
+        if (elementExistsIn(c[i], buffer, index)) {
             continue;
         }
 
-        ret->array[index] = c->array[i];
+        buffer[index] = c[i];
         index++;
     }
 
-    ret->length = index;
-    realloc(ret->array, sizeof(int) * ret->length);
-
-    return ret;
+    return index;
 }
 
-Set *getMissingNumbers(int *inputArray) {
-    Set *ret = (Set*) malloc(sizeof(Set));
-    ret->array = (int*) malloc(sizeof(int) * GRID_SIZE);
+int getMissingNumbers(int *buffer, int bufferLength, int *inputArray) {
     int currentIndex = 0;
     for (int i = 1; i <= GRID_SIZE; i++) {
         if (contains(inputArray, GRID_SIZE, i)) {
             continue;
         }
-        ret->array[currentIndex] = i;
+        buffer[currentIndex] = i;
         currentIndex++;
     }
-    ret->length = currentIndex;
-    ret->array = (int*) realloc(ret->array, sizeof(int) * ret->length);
 
-    return ret;
+    return currentIndex;
 }
 
 int existsIn(int *arrayA, int aLen, int *arrayB, int bLen) {
@@ -144,63 +131,46 @@ int contains(int *arr, int len, int val) {
     return 0;
 }
 
-Set* getPossibleValues(int **puzzle, int i, int j) {
+int getPossibleValues(int *buffer, int **puzzle, int i, int j) {
     int *row = puzzle[i];
     int *column = getColumn(puzzle, j); // Must be freed
     int *gridArray = getGridArray(puzzle, j, i); // Must be freed
-    Set *missingRow, *missingColumn, *missingGrid; // all must be freed
-    missingRow = getMissingNumbers(row); 
-    missingColumn = getMissingNumbers(column);
-    missingGrid = getMissingNumbers(gridArray);
 
-    Set *possibleValues = intersection(
-        missingRow->array, missingRow->length,
-        missingColumn->array, missingColumn->length,
-        missingGrid->array, missingGrid->length
+    int missingRow[GRID_SIZE] = { 0 };
+    int missingColumn[GRID_SIZE] = { 0 };
+    int missingGrid[GRID_SIZE] = { 0 };
+
+    int missingRowLength = getMissingNumbers(missingRow, GRID_SIZE, row); 
+    int missingColumnLength = getMissingNumbers(missingColumn, GRID_SIZE, column);
+    int missingGridLength = getMissingNumbers(missingGrid, GRID_SIZE, gridArray);
+
+    int possibleValuesLength = intersection(
+        buffer, GRID_SIZE*3,
+        missingRow, missingRowLength,
+        missingColumn, missingColumnLength,
+        missingGrid, missingGridLength
     );
 
     // Free my boy
     free(column);
     free(gridArray);
 
-    free(missingRow->array);
-    free(missingColumn->array);
-    free(missingGrid->array);
-    free(missingRow);
-    free(missingColumn);
-    free(missingGrid);
-
-    return possibleValues;
+    return possibleValuesLength;
 }
 
-Set* removeElements(Set* inputSet, Set* elementsToRemove) {
-    Set* ret = (Set*) malloc(sizeof(Set));
-    ret->array = (int*) malloc(sizeof(int) * inputSet->length);
-    ret->length = 0;
+int removeElements(int *input, int inputLength, int* elementsToRemove, int elementsToRemoveLength) {
+    int index = 0;
+    for (int i = 0; i < inputLength; i++) {
+        int inputElement = input[i];
 
-    for (int i = 0; i < inputSet->length; i++) {
-        int matched = 0;
-        int inputElement = inputSet->array[i];
-
-        for (int j = 0; j < elementsToRemove->length; j++) {
-            int removeElement = elementsToRemove->array[j];
-
-            if (inputElement == removeElement) {
-                matched = 1;
-                continue;
-            }
-        }
-
-        if (matched) {
+        if (elementExistsIn(inputElement, elementsToRemove, elementsToRemoveLength)) {
             continue;
         }
 
         // Add element
-        ret->array[ret->length] = inputElement;
-        ret->length++;
+        input[index] = inputElement;
+        index++;
     }
-
-    realloc(ret->array, sizeof(int) * ret->length);
     
-    return ret;
+    return index;
 }

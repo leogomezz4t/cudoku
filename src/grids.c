@@ -63,7 +63,7 @@ int *getGridArray(int **puzzle, int x, int y) {
     return returnArray;
 }
 
-Point *findObviousPair(int **puzzle, int i, int j, Set* possibleValues) {
+Point *findObviousPair(int **puzzle, int i, int j, int* possibleValues, int possibleValuesLength) {
     Point* gridCoordinates = getGridCoordinates(j, i); // must be freed
     Point *ret = (Point*) malloc(sizeof(Point));
     // Iterate through the zeroes in the grid
@@ -80,19 +80,17 @@ Point *findObviousPair(int **puzzle, int i, int j, Set* possibleValues) {
             if (gridI == i && gridJ == j) { // Don't match with the original point
                 continue;
             }
-
-            Set* gridCellPossibleValues = getPossibleValues(puzzle, gridI, gridJ);
+            int gridCellPossibleValues[GRID_SIZE];
+            int gridCellPossibleValuesLength = getPossibleValues(gridCellPossibleValues, puzzle, gridI, gridJ);
             if (existsIn(
-                possibleValues->array, possibleValues->length,
-                gridCellPossibleValues->array, gridCellPossibleValues->length)
-                && gridCellPossibleValues->length == 2) { // obvious pair confirmed
+                possibleValues, possibleValuesLength,
+                gridCellPossibleValues, gridCellPossibleValuesLength)
+                && gridCellPossibleValuesLength == 2) { // obvious pair confirmed
                     free(gridCoordinates);
                     ret->x = gridJ;
                     ret->y = gridI;
                     return ret;
                 }
-            free(gridCellPossibleValues->array);
-            free(gridCellPossibleValues);
         }
     }
 

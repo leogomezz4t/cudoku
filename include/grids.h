@@ -14,6 +14,6 @@ Point *getGridCoordinates(int x, int y);
 
 int *getGridArray(int **puzzle, int x, int y);
 
-Point* findObviousPair(int **puzzle, int i, int j, Set* possibleValues);
+Point *findObviousPair(int **puzzle, int i, int j, int* possibleValues, int possibleValuesLength);
 
 #endif

@@ -7,18 +7,18 @@
 #include <stdlib.h>
 
 /*
-    Returns a Set struct pointer containing an int array with the intersection of three unique int arrays
+    Returns the length of the buffer modified
 */
-Set *intersection(int* setA, int aLen, int* setB, int bLen, int* setC, int cLen);
+int intersection(int* buffer, int bufferLength, int* setA, int aLen, int* setB, int bLen, int* setC, int cLen);
 
 /*
     Returns a Set struct pointer containing an int array with the numbers from 1-9 that the input array does not have
 */
-Set *getMissingNumbers(int *inputArray);
+int getMissingNumbers(int *buffer, int bufferLength, int *inputArray);
 
 int existsIn(int *arrayA, int aLen, int *arrayB, int bLen);
 
-Set* getUniqueValues(Set* a, Set* b, Set* c);
+int getUniqueValues(int *buffer, int bufferLength, int* a, int aLength, int* b, int bLength, int* c, int cLength);
 
 int elementExistsIn(int element, int *array, int len);
 
@@ -26,8 +26,8 @@ int onlyExistsIn(int *inputArray, int inputLen, int *matchedArray, int matchedLe
 
 int contains(int *arr, int len, int val);
 
-Set* getPossibleValues(int **puzzle, int i, int j);
+int getPossibleValues(int *buffer, int **puzzle, int i, int j);
 
-Set* removeElements(Set* inputSet, Set* elementsToRemove);
+int removeElements(int *input, int inputLength, int* elementsToRemove, int elementsToRemoveLength);
 
 #endif

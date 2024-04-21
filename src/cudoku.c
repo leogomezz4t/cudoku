@@ -16,12 +16,12 @@ int solve(int **puzzle) {
 }
 
 
-void obviousSingle(int **puzzle, int i, int j, Set* possibleValues, int* solutionsFound) {
-    puzzle[i][j] = possibleValues->array[0];
+void obviousSingle(int **puzzle, int i, int j, int *possibleValues, int* solutionsFound) {
+    puzzle[i][j] = possibleValues[0];
     (*solutionsFound)++;
 }
 
-void obviousPairs(int **puzzle, Point* obviousPair, Point* gridCoordinates, Set* possibleValues, int* solutionsFound) {
+void obviousPairs(int **puzzle, Point* obviousPair, Point* gridCoordinates, int* possibleValues, int possibleValuesLength, int* solutionsFound) {
     //printf("FOUND OBVIOUS PAIR\nCoordinates x: %i y: %i\n", obviousPair->x, obviousPair->y);
     // iterate through the grid
     for (int gi = 0; gi < 3; gi++) {
@@ -46,20 +46,15 @@ void obviousPairs(int **puzzle, Point* obviousPair, Point* gridCoordinates, Set*
             printf("The obvious pair values: ");
             printArray(possibleValues->array, possibleValues->length);
             */
-            Set* gridPossibleValues = getPossibleValues(puzzle, gridI, gridJ);
-            Set* trimmedElements = removeElements(gridPossibleValues, possibleValues);
+            int gridPossibleValues[GRID_SIZE];
+            int gridPossibleValuesLength = getPossibleValues(gridPossibleValues, puzzle, gridI, gridJ);
+            int trimmedLength = removeElements(gridPossibleValues, gridPossibleValuesLength, possibleValues, possibleValuesLength);
 
             // Check if obvious single is left
-            if (trimmedElements->length == 1) {
-                printf("\nDEBUG FROM PAIRS: changing i: %d j: %d to %d\n", gridI, gridJ, trimmedElements->array[0]);
-                obviousSingle(puzzle, gridI, gridJ, trimmedElements, solutionsFound);
+            if (trimmedLength == 1) {
+                printf("\nDEBUG FROM PAIRS: changing i: %d j: %d to %d\n", gridI, gridJ, gridPossibleValues[0]);
+                obviousSingle(puzzle, gridI, gridJ, gridPossibleValues, solutionsFound);
             }
-
-            // free everyone
-            free(trimmedElements->array);
-            free(trimmedElements);
-            free(gridPossibleValues->array);
-            free(gridPossibleValues);
         }
     }
 }
@@ -82,33 +77,33 @@ void solveRecursor(int **puzzle, int numRecursions, int method, int currentSolut
             // -----
 
             Point* gridCoordinates = getGridCoordinates(j, i); // must be freed
-            Set* possibleValues = getPossibleValues(puzzle, i, j);
+
+            int possibleValues[GRID_SIZE];
+            int possibleValuesLength = getPossibleValues(possibleValues, puzzle, i, j);
 
             
-            if (possibleValues->length == 0) {
+            if (possibleValuesLength == 0) {
                 printf("ERROR WITH ZERO POSSIBLE VALUES\n");
                 printf("i: %i j: %i\n", i, j);
             }
             
-            if (possibleValues->length == 1 && method == OBVIOUS_SINGLE) { // Obvious Singles
+            if (possibleValuesLength == 1 && method == OBVIOUS_SINGLE) { // Obvious Singles
                 obviousSingle(puzzle, i, j, possibleValues, &solutionsFound);
             }
-            if (possibleValues->length == 2 && method == OBVIOUS_PAIRS) { // Obvious Pairs
-                Point* obviousPair = findObviousPair(puzzle, i, j, possibleValues); // must be freed
+            if (possibleValuesLength == 2 && method == OBVIOUS_PAIRS) { // Obvious Pairs
+                Point* obviousPair = findObviousPair(puzzle, i, j, possibleValues, possibleValuesLength); // must be freed
                 // THE OBVIOUS PAIR IS THE COUNTERPART TO THIS CELL IN A PAIR
                 if (obviousPair->x != -1) { // found obvious pair
-                    obviousPairs(puzzle, obviousPair, gridCoordinates, possibleValues, &solutionsFound);
+                    obviousPairs(puzzle, obviousPair, gridCoordinates, possibleValues, possibleValuesLength, &solutionsFound);
                 }
 
                 free(obviousPair);
             }
             if (method == OBVIOUS_TRIPLES) {
-                obviousTriples(puzzle, i, j, gridCoordinates, &solutionsFound);
+                // Baka
             }
             
             // Free everyone
-            free(possibleValues->array);
-            free(possibleValues);
             
             free(gridCoordinates);
         }
