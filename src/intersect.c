@@ -131,21 +131,21 @@ int contains(int *arr, int len, int val) {
     return 0;
 }
 
-int getPossibleValues(int *buffer, int **puzzle, int i, int j) {
+int getPossibleValues(int *buffer, int bufferLength, int **puzzle, int i, int j) {
     int *row = puzzle[i];
     int *column = getColumn(puzzle, j); // Must be freed
     int *gridArray = getGridArray(puzzle, j, i); // Must be freed
 
-    int missingRow[GRID_SIZE] = { 0 };
-    int missingColumn[GRID_SIZE] = { 0 };
-    int missingGrid[GRID_SIZE] = { 0 };
+    int missingRow[GRID_SIZE];
+    int missingColumn[GRID_SIZE];
+    int missingGrid[GRID_SIZE];
 
     int missingRowLength = getMissingNumbers(missingRow, GRID_SIZE, row); 
     int missingColumnLength = getMissingNumbers(missingColumn, GRID_SIZE, column);
     int missingGridLength = getMissingNumbers(missingGrid, GRID_SIZE, gridArray);
 
     int possibleValuesLength = intersection(
-        buffer, GRID_SIZE*3,
+        buffer, bufferLength,
         missingRow, missingRowLength,
         missingColumn, missingColumnLength,
         missingGrid, missingGridLength

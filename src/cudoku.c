@@ -21,17 +21,17 @@ void obviousSingle(int **puzzle, int i, int j, int *possibleValues, int* solutio
     (*solutionsFound)++;
 }
 
-void obviousPairs(int **puzzle, Point* obviousPair, Point* gridCoordinates, int* possibleValues, int possibleValuesLength, int* solutionsFound) {
+void obviousPairs(int **puzzle, Point obviousPair, Point gridCoordinates, int* possibleValues, int possibleValuesLength, int* solutionsFound) {
     //printf("FOUND OBVIOUS PAIR\nCoordinates x: %i y: %i\n", obviousPair->x, obviousPair->y);
     // iterate through the grid
     for (int gi = 0; gi < 3; gi++) {
         for (int gj = 0; gj < 3; gj++) {
-            int gridI = gridCoordinates->y + gi;
-            int gridJ = gridCoordinates->x + gj;
+            int gridI = gridCoordinates.y + gi;
+            int gridJ = gridCoordinates.x + gj;
             int gridCell = puzzle[gridI][gridJ];
 
             // dont remove notes from the obvious pair
-            if (gridI == obviousPair->y && gridJ == obviousPair->x) {
+            if (gridI == obviousPair.y && gridJ == obviousPair.x) {
                 continue;
             }
 
@@ -47,7 +47,7 @@ void obviousPairs(int **puzzle, Point* obviousPair, Point* gridCoordinates, int*
             printArray(possibleValues->array, possibleValues->length);
             */
             int gridPossibleValues[GRID_SIZE];
-            int gridPossibleValuesLength = getPossibleValues(gridPossibleValues, puzzle, gridI, gridJ);
+            int gridPossibleValuesLength = getPossibleValues(gridPossibleValues, GRID_SIZE, puzzle, gridI, gridJ);
             int trimmedLength = removeElements(gridPossibleValues, gridPossibleValuesLength, possibleValues, possibleValuesLength);
 
             // Check if obvious single is left
@@ -66,7 +66,6 @@ void solveRecursor(int **puzzle, int numRecursions, int method, int currentSolut
     int solutionsFound = 0;
     // Iterate through each cell
     for (int i = 0; i < GRID_SIZE; i++) {
-        int *row = puzzle[i];
         for (int j = 0; j < GRID_SIZE; j++) {
             int cell = puzzle[i][j];
             if (cell != 0) { // If the element is already defined don't change it
@@ -76,11 +75,10 @@ void solveRecursor(int **puzzle, int numRecursions, int method, int currentSolut
             zeroesFound++;
             // -----
 
-            Point* gridCoordinates = getGridCoordinates(j, i); // must be freed
+            Point gridCoordinates = getGridCoordinates(j, i);
 
             int possibleValues[GRID_SIZE];
-            int possibleValuesLength = getPossibleValues(possibleValues, puzzle, i, j);
-
+            int possibleValuesLength = getPossibleValues(possibleValues, GRID_SIZE, puzzle, i, j);
             
             if (possibleValuesLength == 0) {
                 printf("ERROR WITH ZERO POSSIBLE VALUES\n");
@@ -91,24 +89,18 @@ void solveRecursor(int **puzzle, int numRecursions, int method, int currentSolut
                 obviousSingle(puzzle, i, j, possibleValues, &solutionsFound);
             }
             if (possibleValuesLength == 2 && method == OBVIOUS_PAIRS) { // Obvious Pairs
-                Point* obviousPair = findObviousPair(puzzle, i, j, possibleValues, possibleValuesLength); // must be freed
+                Point obviousPair = findObviousPair(puzzle, i, j, possibleValues, possibleValuesLength); // must be freed
                 // THE OBVIOUS PAIR IS THE COUNTERPART TO THIS CELL IN A PAIR
-                if (obviousPair->x != -1) { // found obvious pair
+                if (obviousPair.x != -1) { // found obvious pair
                     obviousPairs(puzzle, obviousPair, gridCoordinates, possibleValues, possibleValuesLength, &solutionsFound);
                 }
-
-                free(obviousPair);
             }
             if (method == OBVIOUS_TRIPLES) {
                 // Baka
             }
-            
-            // Free everyone
-            
-            free(gridCoordinates);
         }
-    }
-
+    } // End of puzzle iteration
+    
     // check if it has been solved
     if (zeroesFound <= 0) {
         printf("Solved with %d recursions\n", numRecursions);

@@ -17,6 +17,6 @@ void solveRecursor(int **puzzle, int numRecursions, int method, int currentSolut
 
 void obviousSingle(int **puzzle, int i, int j, int *possibleValues, int* solutionsFound);
 
-void obviousPairs(int **puzzle, Point* obviousPair, Point* gridCoordinates, int* possibleValues, int possibleValuesLength, int* solutionsFound);
+void obviousPairs(int **puzzle, Point obviousPair, Point gridCoordinates, int* possibleValues, int possibleValuesLength, int* solutionsFound);
 
 #endif

@@ -26,7 +26,7 @@ int onlyExistsIn(int *inputArray, int inputLen, int *matchedArray, int matchedLe
 
 int contains(int *arr, int len, int val);
 
-int getPossibleValues(int *buffer, int **puzzle, int i, int j);
+int getPossibleValues(int *buffer, int bufferLength, int **puzzle, int i, int j);
 
 int removeElements(int *input, int inputLength, int* elementsToRemove, int elementsToRemoveLength);
 

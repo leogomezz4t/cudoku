@@ -10,10 +10,10 @@ int* getColumn(int **puzzle, int x);
 
 int** getGrid(int **puzzle, int x, int y);
 
-Point *getGridCoordinates(int x, int y);
+Point getGridCoordinates(int x, int y);
 
 int *getGridArray(int **puzzle, int x, int y);
 
-Point *findObviousPair(int **puzzle, int i, int j, int* possibleValues, int possibleValuesLength);
+Point findObviousPair(int **puzzle, int i, int j, int* possibleValues, int possibleValuesLength);
 
 #endif
